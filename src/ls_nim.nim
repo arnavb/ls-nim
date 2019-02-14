@@ -1,4 +1,5 @@
 #[
+ls_nim - A simple clone of the ls command in Nim
 Copyright 2019 Arnav Borborah
 
 Licensed under the Apache License, Version 2.0 (the "License");
