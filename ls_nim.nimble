@@ -7,7 +7,7 @@ license       = "Apache-2.0"
 srcDir        = "src"
 bin           = @["ls_nim"]
 skipExt       = @["nim"]
-
+binDir        = "bin"
 
 # Dependencies
 

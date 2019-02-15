@@ -6,3 +6,6 @@
 nimcache/
 
 # End of https://www.gitignore.io/api/nim
+
+# Output binary folder
+bin/
