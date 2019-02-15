@@ -15,8 +15,42 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ]#
 
-proc main() =
-  echo("Hello, World!")
+import parseopt
+import os
+import system
+
+const usage = "usage: ls_nim [folder]"
+const version = "0.1.0"
+
+proc printHelp =
+  echo "ls_nim " & version
+  echo usage
+
+proc main(cliArgs: seq[string]): int32 =
+  # Option parser
+  var optParser = initOptParser(cliArgs)
+
+  var foldername: string = "."
+
+  for kind, key, value in optParser.getopt():
+    case kind
+    of cmdArgument:
+      foldername = key
+    of cmdLongOption, cmdShortOption:
+      case key
+      of "help", "h":
+        printHelp()
+      of "version", "V":
+        echo version
+      else:
+        echo "Error! Invalid option " & key
+        echo usage
+    of cmdEnd:
+      assert false
+  
+  echo "User entered: " & foldername
+  result = 0
 
 when isMainModule:
-  main()
+  let exit_code = main(commandLineParams())
+  programResult = exit_code
