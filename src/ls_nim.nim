@@ -16,40 +16,59 @@ limitations under the License.
 ]#
 
 import parseopt
-import os
-import system
+from os import commandLineParams, normalizedPath, absolutePath, existsDir, walkDir
+import strformat
 
 const usage = "usage: ls_nim [folder]"
 const version = "0.1.0"
 
 proc printHelp =
-  echo "ls_nim " & version
+  echo "ls_nim v" & version
   echo usage
 
 proc main(cliArgs: seq[string]): int32 =
   # Option parser
   var optParser = initOptParser(cliArgs)
 
-  var foldername: string = "."
+  var foldername = "."
 
+  var folderSet = false
   for kind, key, value in optParser.getopt():
     case kind
     of cmdArgument:
-      foldername = key
+      if folderSet:
+        echo "Error! Too many arguments passed!"
+        echo usage
+        return 1
+      else:
+        folderSet = true
+        foldername = key
     of cmdLongOption, cmdShortOption:
       case key
       of "help", "h":
         printHelp()
+        return 0
       of "version", "V":
         echo version
+        return 0
       else:
-        echo "Error! Invalid option " & key
+        echo "Error! Invalid option '" & key & "'"
         echo usage
+        return 1
     of cmdEnd:
       assert false
   
-  echo "User entered: " & foldername
-  result = 0
+  let resolvedPath = normalizedPath(absolutePath(foldername))
+
+  if not existsDir(resolvedPath):
+    echo &"Error! Directory {resolvedPath} was not found!"
+    echo usage
+
+  for foundPath in walkDir(resolvedPath, relative=true):
+    stdout.write(&"{foundPath.path}\t")
+  echo ""
+
+  return 0
 
 when isMainModule:
   let exit_code = main(commandLineParams())
