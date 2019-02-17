@@ -22,48 +22,44 @@ import strformat
 const usage = "usage: ls_nim [folder]"
 const version = "0.1.0"
 
-proc printHelp =
-  echo "ls_nim v" & version
-  echo usage
+proc exitWithMessage(message: string, exitCode: int32): int32 =
+  echo message
+  result = exitCode
 
 proc main(cliArgs: seq[string]): int32 =
-  # Option parser
+  var folderName = "."
+  var folderSet = false
+
+  # Argument parsing
   var optParser = initOptParser(cliArgs)
 
-  var foldername = "."
-
-  var folderSet = false
   for kind, key, value in optParser.getopt():
     case kind
     of cmdArgument:
       if folderSet:
-        echo "Error! Too many arguments passed!"
-        echo usage
-        return 1
+        return exitWithMessage(&"Error! Too many arguments passed!\n{usage}", 1)
       else:
         folderSet = true
-        foldername = key
+        folderName = key
     of cmdLongOption, cmdShortOption:
       case key
       of "help", "h":
-        printHelp()
-        return 0
+        return exitWithMessage(&"ls_nim v{version}\n{usage}", 0)
       of "version", "V":
-        echo version
-        return 0
+        return exitWithMessage(&"ls_nim v{version}", 0)
       else:
-        echo "Error! Invalid option '" & key & "'"
-        echo usage
-        return 1
+        return exitWithMessage(&"Error! Invalid option '{key}'\n{usage}", 1)
     of cmdEnd:
       assert false
-  
-  let resolvedPath = normalizedPath(absolutePath(foldername))
+  # End argument parsing
 
+  let resolvedPath = normalizedPath(absolutePath(folderName))
+
+  # Directory not found
   if not existsDir(resolvedPath):
-    echo &"Error! Directory {resolvedPath} was not found!"
-    echo usage
+    return exitWithMessage(&"Error! Directory {resolvedPath} was not found!\n{usage}", 1)
 
+  # List all paths found in specified directory
   for foundPath in walkDir(resolvedPath, relative=true):
     stdout.write(&"{foundPath.path}\t")
   echo ""
