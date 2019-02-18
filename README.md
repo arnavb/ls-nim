@@ -1,5 +1,7 @@
 # ls-nim
 
+[![Travis Build Status](https://travis-ci.org/arnavb/ls-nim.svg?branch=master)](https://travis-ci.org/arnavb/ls-nim)
+
 This is a simple clone of `ls` command in Nim. I made this mostly
 for learning purposes.
 
