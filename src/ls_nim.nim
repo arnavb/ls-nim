@@ -38,7 +38,8 @@ proc main(cliArgs: seq[string]): int32 =
     case kind
     of cmdArgument:
       if folderSet:
-        return exitWithMessage(&"Error! Too many arguments passed!\n{usage}", 1)
+        return exitWithMessage(&"Error! Too many arguments passed!\n{usage}",
+            1)
       else:
         folderSet = true
         folderName = key
@@ -58,15 +59,16 @@ proc main(cliArgs: seq[string]): int32 =
 
   # Directory not found
   if not existsDir(resolvedPath):
-    return exitWithMessage(&"Error! Directory {resolvedPath} was not found!\n{usage}", 1)
+    return exitWithMessage(&"Error! Directory {resolvedPath} was not found!\n{usage}",
+        1)
 
   # List all paths found in specified directory
-  for i, foundPath in walkDir(resolvedPath, relative=true).toSeq:
+  for i, foundPath in walkDir(resolvedPath, relative = true).toSeq:
     let foundPath = foundPath.path
-    
-    if foundPath.len >= 19:
+
+    if foundPath.len > 18:
       let output = &"{foundPath[0..10]}..."
-      stdout.write(&"{output:20}")  
+      stdout.write(&"{output:20}")
     else:
       stdout.write(&"{foundPath:20}")
 
