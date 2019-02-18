@@ -16,8 +16,9 @@ limitations under the License.
 ]#
 
 import parseopt
-from os import commandLineParams, normalizedPath, absolutePath, existsDir, walkDir
+import os
 import strformat
+import sequtils
 
 const usage = "usage: ls_nim [folder]"
 const version = "0.1.0"
@@ -60,10 +61,18 @@ proc main(cliArgs: seq[string]): int32 =
     return exitWithMessage(&"Error! Directory {resolvedPath} was not found!\n{usage}", 1)
 
   # List all paths found in specified directory
-  for foundPath in walkDir(resolvedPath, relative=true):
-    stdout.write(&"{foundPath.path}\t")
-  echo ""
+  for i, foundPath in walkDir(resolvedPath, relative=true).toSeq:
+    let foundPath = foundPath.path
+    
+    if foundPath.len > 19:
+      let output = &"{foundPath[0..10]}..."
+      stdout.write(&"{output:20}")  
+    else:
+      stdout.write(&"{foundPath:20}")
 
+    if (i + 1) mod 4 == 0:
+      echo ""
+  echo ""
   return 0
 
 when isMainModule:

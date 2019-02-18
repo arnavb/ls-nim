@@ -9,3 +9,4 @@ nimcache/
 
 # Output binary folder
 bin/
+.vscode/
