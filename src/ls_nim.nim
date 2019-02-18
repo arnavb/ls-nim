@@ -64,7 +64,7 @@ proc main(cliArgs: seq[string]): int32 =
   for i, foundPath in walkDir(resolvedPath, relative=true).toSeq:
     let foundPath = foundPath.path
     
-    if foundPath.len > 19:
+    if foundPath.len >= 19:
       let output = &"{foundPath[0..10]}..."
       stdout.write(&"{output:20}")  
     else:
